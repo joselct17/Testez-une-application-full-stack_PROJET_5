@@ -5,6 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { expect } from '@jest/globals';
 
 import { AppComponent } from './app.component';
+import { Router } from '@angular/router';
+import { SessionService } from './services/session.service';
 
 
 describe('AppComponent', () => {
@@ -25,5 +27,17 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('should log out', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    const sessionService = TestBed.inject(SessionService);
+    const router = TestBed.inject(Router);
+    const logOut = jest.spyOn(sessionService, 'logOut').mockReturnValue();
+    const navigate = jest.spyOn(router, 'navigate').mockImplementation(async () => true);
+    app.logout();
+    expect(logOut).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalled();
   });
 });

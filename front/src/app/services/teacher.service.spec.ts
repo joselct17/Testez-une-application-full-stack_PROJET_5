@@ -19,4 +19,14 @@ describe('TeacherService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should get all teachers', () => {
+    const teachers = service.all();
+    expect(teachers).toBeTruthy();
+  });
+
+  it('should get teacher detail', () => {
+    const teacher = service.detail('1');
+    expect(teacher).toBeTruthy();
+  });
 });

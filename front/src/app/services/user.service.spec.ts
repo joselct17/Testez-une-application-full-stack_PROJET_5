@@ -19,4 +19,14 @@ describe('UserService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should get user by id', () => {
+    const user = service.getById('1');
+    expect(user).toBeTruthy();
+  });
+
+  it('should delete user', () => {
+    const user = service.delete('1');
+    expect(user).toBeTruthy();
+  });
 });
