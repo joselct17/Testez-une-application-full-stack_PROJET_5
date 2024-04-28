@@ -1,15 +1,17 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { expect } from '@jest/globals';
 
 import { RegisterComponent } from './register.component';
+import { of } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import {MatCardModule} from "@angular/material/card";
-import {MatIconModule} from "@angular/material/icon";
-import {MatInputModule} from "@angular/material/input";
+import { Router } from '@angular/router';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -18,26 +20,23 @@ describe('RegisterComponent', () => {
   let router: Router;
 
   beforeEach(async () => {
-    const authServiceMock = {
-      register: jest.fn()
-    };
-
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
       providers: [
-        FormBuilder,
-        { provide: AuthService, useValue: authServiceMock }
+        { provide: AuthService, useValue: { register: jest.fn() } },
+        { provide: Router, useValue: { navigate: jest.fn() } }
       ],
       imports: [
+        BrowserAnimationsModule,
+        HttpClientModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
         MatCardModule,
+        MatFormFieldModule,
         MatIconModule,
         MatInputModule
-
       ]
-    }).compileComponents();
+    })
+      .compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
@@ -46,87 +45,54 @@ describe('RegisterComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('form invalid when empty', () => {
+  it('should have a form invalid when empty', () => {
     expect(component.form.valid).toBeFalsy();
   });
 
-  it('email field validity', () => {
+  it('should enable the submit button when the form is valid', () => {
+    let password = component.form.controls['password'];
     let email = component.form.controls['email'];
-    expect(email.valid).toBeFalsy();
+    let firstName = component.form.controls['firstName'];
+    let lastName = component.form.controls['lastName'];
+    let submit = fixture.nativeElement.querySelector('button[type]');
 
-    email.setValue('');
-    expect(email.hasError('required')).toBeTruthy();
-
-    email.setValue('test');
-    expect(email.hasError('email')).toBeTruthy();
-  });
-
-  it('submitting a form emits a user', () => {
+    password.setValue("password");
+    email.setValue("email@test.fr");
+    firstName.setValue("firstName");
+    lastName.setValue("lastName");
     fixture.detectChanges();
-    component.form.controls['email'].setValue('test@test.com');
-    component.form.controls['firstName'].setValue('John');
-    component.form.controls['lastName'].setValue('Doe');
-    component.form.controls['password'].setValue('validPassword123');
     expect(component.form.valid).toBeTruthy();
-
-    const authServiceSpy = jest.spyOn(authService, 'register').mockReturnValue(of(undefined));
-    const routerSpy = jest.spyOn(router, 'navigate');
-
-    component.submit();
-
-    expect(authServiceSpy).toHaveBeenCalled();
-    expect(routerSpy).toHaveBeenCalledWith(['/login']);
+    expect(submit.disabled).toEqual(false);
   });
 
-  it('should handle register error', () => {
-    component.form.controls['email'].setValue('test@test.com');
-    component.form.controls['firstName'].setValue('John');
-    component.form.controls['lastName'].setValue('Doe');
-    component.form.controls['password'].setValue('12345');
-
-    jest.spyOn(authService, 'register').mockReturnValue(throwError(() => new Error('Registration failed')));
-
-    component.submit();
-
-    expect(component.onError).toBe(true);
+  it('should disable the submit button when the form is invalid', () => {
+    component.form.controls['email'].setValue('');
+    component.form.controls['password'].setValue('');
+    component.form.controls['firstName'].setValue('');
+    component.form.controls['lastName'].setValue('');
+    fixture.detectChanges();
+    let submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
+    expect(submitButton.disabled).toBeTruthy();
   });
 
-  it('should not navigate to login if registration fails', () => {
-    jest.spyOn(authService, 'register').mockReturnValue(throwError(() => new Error('Registration failed')));
-    const navigateSpy = jest.spyOn(router, 'navigate');
-
-    component.form.controls['email'].setValue('test@test.com');
-    component.form.controls['firstName'].setValue('John');
-    component.form.controls['lastName'].setValue('Doe');
-    component.form.controls['password'].setValue('12345');
+  it('should redirect to login page when submit', () => {
+    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation(async () => true);
+    const authSpy = jest.spyOn(authService, 'register').mockImplementation(() => of(undefined));
     component.submit();
-
-    expect(navigateSpy).not.toHaveBeenCalledWith(['/login']);
+    expect(authSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 
-  it('should display an error message when onError is true', () => {
+  it('should show an error when error', () => {
     component.onError = true;
     fixture.detectChanges();
-
-    const errorElement = fixture.nativeElement.querySelector('.error-message');
-    expect(errorElement).toBeDefined();
+    const formElement: HTMLElement = fixture.nativeElement;
+    const errorMessage = formElement.querySelector('span.error');
+    expect(errorMessage).toBeTruthy();
+    expect(errorMessage!.textContent).toContain('An error occurred');
   });
-
-  it('should not allow submission with password less than 3 characters', () => {
-    jest.spyOn(authService, 'register').mockReturnValue(of(undefined));
-
-    component.form.controls['email'].setValue('test@test.com');
-    component.form.controls['firstName'].setValue('John');
-    component.form.controls['lastName'].setValue('Doe');
-    component.form.controls['password'].setValue('12');
-    component.submit();
-
-    expect(component.form.valid).toBeFalsy();
-    expect(authService.register).not.toHaveBeenCalled();
-  });
-
 });

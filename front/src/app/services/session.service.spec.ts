@@ -3,7 +3,7 @@ import { expect } from '@jest/globals';
 import { SessionService } from './session.service';
 import { SessionInformation } from '../interfaces/sessionInformation.interface';
 
-describe('SessionService Integration', () => {
+describe('SessionService', () => {
   let service: SessionService;
   let mockSessionInfo: SessionInformation;
 

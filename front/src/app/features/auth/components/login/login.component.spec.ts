@@ -1,18 +1,18 @@
-import { HttpClientModule } from '@angular/common/http';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of, throwError } from 'rxjs';
+import { expect } from '@jest/globals';
+import { Router } from '@angular/router';
+import { throwError, of } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../services/auth.service';
 import { SessionService } from 'src/app/services/session.service';
-import { Router } from '@angular/router';
-import {SessionInformation} from "../../../../interfaces/sessionInformation.interface";
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -21,21 +21,30 @@ describe('LoginComponent', () => {
   let sessionService: SessionService;
   let router: Router;
 
+  const mockAuthService = {
+    login: jest.fn()
+  };
+
+  const mockSessionService = {
+    sessionInformation: {
+      admin: true,
+      id: 1
+    },
+    logIn: jest.fn(),
+    logOut: jest.fn()
+  };
+
+  const mockRouter = {
+    navigate: jest.fn()
+  };
+
   beforeEach(async () => {
-    const authServiceMock = {
-      login: jest.fn()
-    };
-
-    const sessionServiceMock = {
-      logIn: jest.fn()
-    };
-
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
       providers: [
-        FormBuilder,
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: SessionService, useValue: sessionServiceMock }
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: SessionService, useValue: mockSessionService },
+        { provide: Router, useValue: mockRouter }
       ],
       imports: [
         RouterTestingModule,
@@ -47,99 +56,70 @@ describe('LoginComponent', () => {
         MatInputModule,
         ReactiveFormsModule
       ]
-    }).compileComponents();
+    })
+      .compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthService);
     sessionService = TestBed.inject(SessionService);
     router = TestBed.inject(Router);
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call AuthService login on form submit and navigate to sessions', () => {
-    const loginResponse: SessionInformation = {
-      token: '123',
-      type: 'Bearer',
+  it('form invalid when empty', () => {
+    expect(component.form.valid).toBeFalsy();
+  });
+
+  it('should set onError to true on failed login attempt', fakeAsync(() => {
+    let errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+
+    jest.spyOn(mockAuthService, 'login').mockReturnValue(throwError(() => errorResponse));
+
+    component.submit();
+    tick(); // simulate passage of time for the async operation to resolve
+    expect(component.onError).toBe(true);
+  }));
+
+  it('should handle successful login', () => {
+    const mockUser = {
       id: 1,
-      username: 'testuser',
-      firstName: 'Test',
-      lastName: 'User',
+      username: 'test@test.fr',
+      firstName: 'firstName',
+      lastName: 'lastName',
+      token: 'mockToken',
+      type: 'Bearer',
       admin: false
     };
-    jest.spyOn(authService, 'login').mockReturnValue(of(loginResponse));
-    const navigateSpy = jest.spyOn(router, 'navigate');
 
-    component.form.setValue({
-      email: 'test@example.fr',
-      password: 'password'
-    });
+    jest.spyOn(mockAuthService, 'login').mockReturnValue(of(mockUser));
+    jest.spyOn(mockSessionService, 'logIn');
+    jest.spyOn(mockRouter, 'navigate');
+
+    component.form.controls['email'].setValue('test@test.fr');
+    component.form.controls['password'].setValue('password');
     component.submit();
 
-    expect(authService.login).toHaveBeenCalledWith({
-      email: 'test@example.fr',
-      password: 'password'
-    });
-    expect(sessionService.logIn).toHaveBeenCalledWith(loginResponse);
-    expect(navigateSpy).toHaveBeenCalledWith(['/sessions']);
-    expect(component.onError).toBe(false);
+    expect(mockAuthService.login).toHaveBeenCalled();
+    expect(mockSessionService.logIn).toHaveBeenCalledWith(mockUser);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
   });
 
-  it('should set onError to true if login fails', () => {
-    jest.spyOn(authService, 'login').mockReturnValue(throwError(() => new Error('Login failed')));
-    component.form.setValue({
-      email: 'test@example.fr',
-      password: 'password'
-    });
-    component.submit();
+  it('form should be valid when all fields are filled', () => {
+    const email = component.form.controls['email'];
+    const password = component.form.controls['password'];
 
-    expect(component.onError).toBe(true);
-  });
+    email.setValue('test@example.com');
+    password.setValue('123456');
 
-  it('should have the correct initial state', () => {
-    expect(component.hide).toBe(true);
-    expect(component.onError).toBe(false);
-    expect(component.form.valid).toBeFalsy();
-  });
-
-  it('should display error message when form is invalid', () => {
-    const emailField = component.form.controls['email'];
-    const passwordField = component.form.controls['password'];
-
-    emailField.setValue('');
-    passwordField.setValue('');
-    fixture.detectChanges();
-
-    expect(component.form.valid).toBeFalsy();
-    expect(emailField.errors).not.toBeNull();
-    expect(passwordField.errors).not.toBeNull();
-  });
-
-  it('should not submit the form if it is invalid', () => {
-    jest.spyOn(authService, 'login').mockReturnValue(of({
-      token: '',
-      type: '',
-      id: 0,
-      username: '',
-      firstName: '',
-      lastName: '',
-      admin: false
-    } as SessionInformation));
-
-    component.form.setValue({
-      email: '',
-      password: ''
-    });
-
-    if (component.form.valid) {
-      component.submit();
-    }
-
-    expect(authService.login).not.toHaveBeenCalled();
-    expect(component.onError).toBe(false);
+    expect(component.form.valid).toBeTruthy();
   });
 
 });

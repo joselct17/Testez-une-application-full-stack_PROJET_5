@@ -18,6 +18,7 @@ import { FormComponent } from './form.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { ListComponent } from '../list/list.component';
+import {BrowserModule} from "@angular/platform-browser";
 
 describe('FormComponent', () => {
   let component: FormComponent;
@@ -41,6 +42,10 @@ describe('FormComponent', () => {
     users: []
   };
 
+  const disableAnimations =
+    !('animate' in document.documentElement)
+    || (navigator && /iPhone OS (8|9|10|11|12|13)_/.test(navigator.userAgent));
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
@@ -55,7 +60,8 @@ describe('FormComponent', () => {
         ReactiveFormsModule,
         MatSnackBarModule,
         MatSelectModule,
-        BrowserAnimationsModule
+        BrowserModule,
+        BrowserAnimationsModule.withConfig({ disableAnimations }),
       ],
       providers: [
         {provide: SessionService, useValue: sessionServiceMock},

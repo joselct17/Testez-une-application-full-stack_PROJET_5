@@ -4,7 +4,7 @@ import { TeacherService } from './teacher.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Teacher } from '../interfaces/teacher.interface';
 
-describe('TeacherService Integration', () => {
+describe('TeacherService', () => {
   let service: TeacherService;
   let httpMock: HttpTestingController;
 
