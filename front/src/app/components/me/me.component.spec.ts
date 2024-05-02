@@ -13,6 +13,7 @@ import { SessionApiService } from 'src/app/features/sessions/services/session-ap
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
+import { User } from 'src/app/interfaces/user.interface';
 
 describe('MeComponent', () => {
   let component: MeComponent;
@@ -68,5 +69,24 @@ describe('MeComponent', () => {
     expect(matSnackBar).toHaveBeenCalledWith('Your account has been deleted !', 'Close', { duration: 3000 });
     expect(logOut).toHaveBeenCalled();
     expect(route).toHaveBeenCalledWith(['/']);
+  });
+
+  it('should get user by id', () => {
+    const userService = TestBed.inject(UserService);
+    const user : User = 
+      {
+        id: 1,
+        email: '1',
+        lastName: '1',
+        firstName: '1',
+        admin: true,
+        password: '1',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+    const getById = jest.spyOn(userService, 'getById').mockImplementation(() => of(user));
+    component.ngOnInit();
+    expect(getById).toHaveBeenCalled();
+    expect(component.user).toEqual(user);
   });
 });

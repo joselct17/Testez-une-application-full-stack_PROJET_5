@@ -7,6 +7,7 @@ import { expect } from '@jest/globals';
 import { AppComponent } from './app.component';
 import { Router } from '@angular/router';
 import { SessionService } from './services/session.service';
+import { of } from 'rxjs';
 
 
 describe('AppComponent', () => {
@@ -39,5 +40,14 @@ describe('AppComponent', () => {
     app.logout();
     expect(logOut).toHaveBeenCalled();
     expect(navigate).toHaveBeenCalled();
+  });
+
+  it('should check if user is logged in', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    const sessionService = TestBed.inject(SessionService);
+    const isLogged = jest.spyOn(sessionService, '$isLogged').mockImplementation(() => of(true));
+    app.$isLogged();
+    expect(isLogged).toHaveBeenCalled();
   });
 });

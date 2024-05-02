@@ -34,4 +34,11 @@ describe('SessionService', () => {
     service.logOut();
     expect(service.isLogged).toBeFalsy();
   });
+
+  it('should return isLogged', () => {
+    service.isLogged = true;
+    service.$isLogged().subscribe(isLogged => {
+      expect(isLogged).toBeTruthy();
+    });
+  });
 });

@@ -82,4 +82,23 @@ describe('FormComponent', () => {
     expect(matSnackBar).toHaveBeenCalledWith('Session updated !', 'Close', { duration: 3000 })
     expect(route).toHaveBeenCalledWith((['sessions']));
   });
+
+  
+  it('should call initForm with the session', () => {
+    const route = TestBed.inject(Router);
+    jest.spyOn(route, 'url', 'get').mockReturnValue('update');
+    const sessionApiService = TestBed.inject(SessionApiService);
+    const detail = jest.spyOn(sessionApiService, 'detail').mockImplementation(() => of({} as Session));
+    component.ngOnInit();
+    expect(detail).toHaveBeenCalled();
+  });
+
+  it('should redirect to /sessions if user is not admin', () => {
+    const sessionService = TestBed.inject(SessionService);
+    sessionService.sessionInformation!.admin = false;
+    const router = TestBed.inject(Router);
+    const navigate = jest.spyOn(router, 'navigate').mockImplementation();
+    component.ngOnInit();
+    expect(navigate).toHaveBeenCalledWith(['/sessions']);
+  });
 });

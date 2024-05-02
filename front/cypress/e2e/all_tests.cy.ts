@@ -1,0 +1,7 @@
+import "./create_session.cy"
+import "./delete_account.cy"
+import "./login.cy"
+import "./register.cy"
+import "./notFound.cy"
+import "./participate_session.cy"
+import "./me.cy"
