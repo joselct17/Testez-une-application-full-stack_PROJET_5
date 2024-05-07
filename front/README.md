@@ -70,3 +70,13 @@ Launching test:
 for following change:
 
 > npm run test:watch
+
+npm run test -- --coverage
+/coverage/jest/lcov-report/index.html
+
+npm run e2e
+npm run e2e:coverage
+/coverage/lcov-report/index.html
+
+mvn clean test
+/target/site/jacoco/index.html

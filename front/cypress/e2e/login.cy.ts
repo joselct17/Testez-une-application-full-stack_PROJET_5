@@ -34,20 +34,16 @@ describe('Login Component', () => {
         lastName: 'lastName',
         admin: true
       },
-    })
+    });
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/api/session',
-      },
-      []).as('session')
+    cy.intercept('GET', '/api/session')
+      .as('Session');
 
-    cy.get('input[formControlName=email]').type("yoga@studio.com")
-    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
+    cy.get('input[formControlName=email]').type("yoga@studio.com");
+    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`);
 
-    cy.url().should('include', '/sessions')
-    cy.get('.error').should('not.exist')
+    cy.url().should('include', '/sessions');
+    cy.get('.error').should('not.exist');
   })
 
   it('should log out user after log in', () => {
@@ -60,19 +56,15 @@ describe('Login Component', () => {
         lastName: 'lastName',
         admin: true
       },
-    })
+    });
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/api/session',
-      },
-      []).as('session')
+    cy.intercept('GET', '/api/session')
+      .as('Session');
 
-    cy.get('input[formControlName=email]').type("yoga@studio.com")
-    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
+    cy.get('input[formControlName=email]').type("yoga@studio.com");
+    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`);
 
-    cy.url().should('include', '/sessions')
+    cy.url().should('include', '/sessions');
     cy.contains('Logout').click();
     cy.url().should('include', '/');
     cy.contains('Login');

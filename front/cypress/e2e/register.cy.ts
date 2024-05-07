@@ -21,34 +21,34 @@ describe('Register Component', () => {
   });
 
   it('should register successfully and redirect to the login page', () => {
-    cy.visit('/register')
+    cy.visit('/register');
 
-    cy.intercept('POST', '/api/auth/register', { statusCode: 200 })
+    cy.intercept('POST', '/api/auth/register', { statusCode: 200 });
 
-    cy.get('input[formControlName=firstName]').type("firstName")
-    cy.get('input[formControlName=lastName]').type("lastName")
-    cy.get('input[formControlName=email]').type("email@test.fr")
-    cy.get('input[formControlName=password]').type(`${"password123"}{enter}{enter}`)
-    cy.url().should('include', '/login')
+    cy.get('input[formControlName=firstName]').type("firstName");
+    cy.get('input[formControlName=lastName]').type("lastName");
+    cy.get('input[formControlName=email]').type("email@test.fr");
+    cy.get('input[formControlName=password]').type(`${"password123"}{enter}{enter}`);
+    cy.url().should('include', '/login');
   });
 
   it('should disabled button when field is empty', () => {
-    cy.get('input[formControlName=firstName]').type("firstName")
-    cy.get('input[formControlName=lastName]').type(`{enter}{enter}`)
+    cy.get('input[formControlName=firstName]').type("firstName");
+    cy.get('input[formControlName=lastName]').type(`{enter}{enter}`);
     cy.get('input[formControlName=lastName]').should('have.class', 'ng-invalid');
 
-    cy.get('button[type=submit]').should('be.disabled')
+    cy.get('button[type=submit]').should('be.disabled');
   })
 
   it('should display an error message if the registration fails', () => {
-    cy.visit('/register')
+    cy.visit('/register');
 
-    cy.intercept('POST', '/api/auth/register', { statusCode: 500 })
+    cy.intercept('POST', '/api/auth/register', { statusCode: 500 });
 
-    cy.get('input[formControlName=firstName]').type("firstName")
-    cy.get('input[formControlName=lastName]').type("lastName")
-    cy.get('input[formControlName=email]').type("email@test.fr")
-    cy.get('input[formControlName=password]').type(`${"password123"}{enter}{enter}`)
+    cy.get('input[formControlName=firstName]').type("firstName");
+    cy.get('input[formControlName=lastName]').type("lastName");
+    cy.get('input[formControlName=email]').type("email@test.fr");
+    cy.get('input[formControlName=password]').type(`${"password123"}{enter}{enter}`);
     cy.get('.error').should('be.visible');
   });
 
@@ -58,16 +58,16 @@ describe('Register Component', () => {
     cy.get('[formControlName="email"]').type('T');
     cy.get('[formControlName="password"]').type('T');
 
-    cy.contains('Submit').should('be.disabled')
+    cy.contains('Submit').should('be.disabled');
   });
 
   it('should display an error if email already exists', () => {
-    cy.intercept('POST', '/api/auth/register', {statusCode: 400})
+    cy.intercept('POST', '/api/auth/register', {statusCode: 400});
 
-    cy.get('input[formControlName=firstName]').type("firstName")
-    cy.get('input[formControlName=lastName]').type("lastName")
+    cy.get('input[formControlName=firstName]').type("firstName");
+    cy.get('input[formControlName=lastName]').type("lastName");
     cy.get('[formControlName="email"]').type('yoga@studio.com');
-    cy.get('input[formControlName=password]').type(`${"password123"}{enter}{enter}`)
+    cy.get('input[formControlName=password]').type(`${"password123"}{enter}{enter}`);
 
     cy.get('.error').should('be.visible');
   });
