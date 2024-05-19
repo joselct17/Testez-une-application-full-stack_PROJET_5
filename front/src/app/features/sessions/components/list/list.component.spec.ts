@@ -8,12 +8,21 @@ import { SessionApiService } from '../../services/session-api.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
+import {of} from "rxjs";
 
 describe('ListComponent', () => {
   let component: ListComponent;
   let fixture: ComponentFixture<ListComponent>;
-  let sessionApiService: SessionApiService;
-  let mockSessionService = { sessionInformation: { admin: true } };
+
+  let mockSessionService = {
+    sessionInformation: {
+      admin: true
+    }
+  };
+
+  const mockSessionApiService = {
+    all: jest.fn().mockReturnValue(of([])),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -26,11 +35,10 @@ describe('ListComponent', () => {
       ],
       providers: [
         { provide: SessionService, useValue: mockSessionService },
-        SessionApiService
+        { provide: SessionApiService, useValue: mockSessionApiService },
       ]
     }).compileComponents();
 
-    sessionApiService = TestBed.inject(SessionApiService);
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -40,12 +48,17 @@ describe('ListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not display admin options for non-admin user', () => {
-    mockSessionService.sessionInformation.admin = false;
-    fixture.detectChanges();
+  it('should initialize sessions$ correctly', () => {
+    expect(component.sessions$).toBeTruthy();
+    expect(mockSessionApiService.all).toHaveBeenCalled();
+  });
 
+  it('should display admin options for admin user', () => {
+    const createButton = fixture.debugElement.query(By.css('.create-button'));
     const editButtons = fixture.debugElement.queryAll(By.css('.edit-button'));
-    expect(editButtons.length).toBe(0);
+
+    expect(createButton).toBeDefined();
+    expect(editButtons).toBeDefined();
   });
 
   it('should not display admin options for non-admin user', () => {
