@@ -53,4 +53,7 @@ describe('Login spec', () => {
     // Vérifier que le message d'erreur est affiché
     cy.get('.error').should('contain', 'An error occurred')
   })
-})
+});
+
+
+
