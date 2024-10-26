@@ -36,3 +36,36 @@ describe('Register spec', () => {
   })
 })
 
+
+describe('Register error spec', () => {
+  it('should display an error message on registration failure', () => {
+    // Visiter la page d'inscription
+    cy.visit('/register')
+
+    // Intercepter la requête d'inscription avec une réponse d'erreur
+    cy.intercept('POST', '/api/auth/register', {
+      statusCode: 400, // Simuler une erreur
+      body: {
+        message: 'Registration failed',
+      },
+    }).as('registerError')
+
+    // Remplir le formulaire avec des données
+    cy.get('input[formControlName=firstName]').type('firstName')
+    cy.get('input[formControlName=lastName]').type('lastName')
+    cy.get('input[formControlName=email]').type('username@username.com')
+    cy.get('input[formControlName=password]').type('password')
+
+    // Soumettre le formulaire
+    cy.get('button[type=submit]').click()
+
+    // Attendre que la requête d'inscription échoue
+    cy.wait('@registerError')
+
+    // Vérifier que le message d'erreur est affiché
+    cy.get('.error').should('contain', 'An error occurred')
+  })
+})
+
+
+
