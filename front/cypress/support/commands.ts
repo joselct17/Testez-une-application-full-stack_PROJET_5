@@ -49,14 +49,14 @@ Cypress.Commands.add('login', () => {
       username: 'user@example.com',
       firstName: 'firstName',
       lastName: 'lastName',
-      admin: false,
+      admin: true,
     },
   }).as('login');
 
   cy.visit('/login');
 
-  cy.get('input[formControlName=email]').type('user@example.com');
-  cy.get('input[formControlName=password]').type('password123{enter}');
+  cy.get('input[formControlName=email]').type('yoga@studio.com');
+  cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`);
 
   // Attendre que la requête soit bien interceptée
   cy.wait('@login');
