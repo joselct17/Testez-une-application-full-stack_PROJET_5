@@ -9,10 +9,10 @@ describe('User Information', () => {
         id: 1,
         firstName: 'firstName',
         lastName: 'lastName',
-        email: 'user@example.com',
-        admin: false,
-        createdAt: '2024-05-29T14:24:33',
-        updatedAt: '2024-05-29T15:20:22',
+        email: 'yoga@studio.com',
+        admin: true,
+        createdAt: ' May 29, 2024',
+        updatedAt: 'May 29, 2024',
       }
     }).as('getUserInfo');
 
@@ -20,9 +20,9 @@ describe('User Information', () => {
     cy.wait('@getUserInfo');
 
     cy.get('p').contains('Name: firstName LASTNAME');
-    cy.get('p').contains('Email: user@example.com');
-    cy.get('p').contains('Create at: Sept 20, 2024');
-    cy.get('p').contains('Last update: Sept 21, 2024');
+    cy.get('p').contains('Email: yoga@studio.com');
+    cy.get('p').contains('Create at: May 29, 2024');
+    cy.get('p').contains('Last update: May 29, 2024');
   });
 
   it('should delete user account successfully', () => {
