@@ -26,7 +26,7 @@ describe('TeacherService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should retrieve all teachers', () => {
+  it('should retrieve all teachers', (done) => {
     const mockTeachers: Teacher[] = [
       { id: 1, lastName: 'Doe', firstName: 'John' , createdAt:new Date("2024-11-13T12:25:25.475Z"), updatedAt:new Date("2024-11-13T12:25:25.475Z")},
       { id: 2, lastName: 'Smith', firstName: 'Jane' , createdAt:new Date("2024-11-13T12:25:25.475Z"), updatedAt:new Date("2024-11-13T12:25:25.475Z")},
@@ -34,6 +34,7 @@ describe('TeacherService', () => {
 
     service.all().subscribe((teachers) => {
       expect(teachers).toEqual(mockTeachers);
+      done()
     });
 
     const req = httpMock.expectOne('api/teacher');
@@ -41,11 +42,12 @@ describe('TeacherService', () => {
     req.flush(mockTeachers);
   });
 
-  it('should retrieve a teacher by ID', () => {
+  it('should retrieve a teacher by ID', (done) => {
     const mockTeacher: Teacher =       { id: 1, lastName: 'Doe', firstName: 'John' , createdAt:new Date("2024-11-13T12:25:25.475Z"), updatedAt:new Date("2024-11-13T12:25:25.475Z")};
 
     service.detail('1').subscribe((teacher) => {
       expect(teacher).toEqual(mockTeacher);
+      done()
     });
 
     const req = httpMock.expectOne('api/teacher/1');
