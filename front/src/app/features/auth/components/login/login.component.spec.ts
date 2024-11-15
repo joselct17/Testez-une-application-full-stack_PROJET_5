@@ -74,7 +74,7 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display an error if one of the fields is empty', () => {
+  it('should not valid the form when password are empty', () => {
     const email = component.form.get('email');
     const password = component.form.get('password');
 
