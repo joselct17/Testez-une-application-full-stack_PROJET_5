@@ -59,7 +59,7 @@ Generate coverage report (you should launch e2e test before):
 
 Report is available here:
 
-> front/coverage/lcov-report/index.html
+> front/coverage/jest/lcov-report/index.html
 
 #### Unitary test
 
@@ -69,4 +69,5 @@ Launching test:
 
 for following change:
 
-> npm run test:watch
+> npm run test -- --coverage
+
