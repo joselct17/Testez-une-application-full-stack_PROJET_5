@@ -67,14 +67,13 @@ describe('SessionService', () => {
     service.$isLogged().subscribe(isLogged => {
       if(!asyncCheck){
         expect(isLogged).toBeFalsy()
-        service.logIn(mockSession);
         asyncCheck=true
+        service.logIn(mockSession);
       }
       else {
         expect(isLogged).toBeTruthy()
         done()
       }
     })
-    done()
   })
 });
