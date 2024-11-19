@@ -6,11 +6,11 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Git clone:
 
-> git clone https://github.com/OpenClassrooms-Student-Center/P5-Full-Stack-testing
+> git clone https://github.com/joselct17/Testez-une-application-full-stack_PROJET_5
 
 Go inside folder:
 
-> cd yoga
+> cd front
 
 Install dependencies:
 
@@ -47,7 +47,17 @@ By default the admin account is:
 
 ### Test
 
+## Back-end
+> cd back 
+> mvn test jacoco:report
+
+ Report is available here 
+
+> target/site/jacoco/index.html
+
+## Front-End
 #### E2E
+> cd front
 
 Launching e2e test:
 
@@ -59,8 +69,6 @@ Generate coverage report (you should launch e2e test before):
 
 Report is available here:
 
-> front/coverage/jest/lcov-report/index.html
-
 #### Unitary test
 
 Launching test:
@@ -71,3 +79,4 @@ for following change:
 
 > npm run test -- --coverage
 
+> front/coverage/jest/lcov-report/index.html
