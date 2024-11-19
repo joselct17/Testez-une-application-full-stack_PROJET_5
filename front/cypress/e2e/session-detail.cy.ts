@@ -3,12 +3,12 @@ describe('Sessions details', () => {
     {
       "id": 1,
       "name": "Test",
-      "date": "2024-07-25T00:00:00.000+00:00",
+      "date": "2024-10-31T00:00:00.000+00:00",
       "teacher_id": 1,
       "description": "Test",
       "users": [5],
-      "createdAt": "2024-07-19T11:30:09",
-      "updatedAt": "2024-07-22T16:42:27"
+      "createdAt": "2024-10-15T11:30:09",
+      "updatedAt": "2024-10-28T16:42:27"
     }
   ]
   beforeEach(() => {
@@ -26,10 +26,10 @@ describe('Sessions details', () => {
     cy.get('h1').should('contain', 'Test');
     cy.get('h1').should('contain', 'Test');
     cy.get('.ml1').should('contain', '1 attendees');
-    cy.get('.ml1').should('contain', 'July 25, 2024');
+    cy.get('.ml1').should('contain', 'October 31, 2024');
     cy.get('.description').should('contain', 'Description: Test');
-    cy.get('.created').should('contain', 'Create at:  July 19, 2024');
-    cy.get('.updated').should('contain', 'Last update:  July 22, 2024');
+    cy.get('.created').should('contain', 'Create at:  October 15, 2024');
+    cy.get('.updated').should('contain', 'Last update:  October 28, 2024');
   })
 
   it('should let the user participate a session', () => {
@@ -45,12 +45,12 @@ describe('Sessions details', () => {
       {
         "id": 1,
         "name": "Test",
-        "date": "2024-07-25T00:00:00.000+00:00",
+        "date": "2024-10-31T00:00:00.000+00:00",
         "teacher_id": 1,
         "description": "Test",
         "users": [1],
-        "createdAt": "2024-07-19T11:30:09",
-        "updatedAt": "2024-07-22T16:42:27"
+        "createdAt": "2024-10-15T11:30:09",
+        "updatedAt": "2024-10-28T16:42:27"
       }
     ]
     cy.intercept('GET', '/api/session', session)
