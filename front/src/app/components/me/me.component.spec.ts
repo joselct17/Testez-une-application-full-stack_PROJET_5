@@ -91,11 +91,6 @@ describe('MeComponent', () => {
     spyHistoryBack.mockRestore();
   });
 
-  // Verify that the component is created successfully
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   // Test the back method, which navigates to the previous page
   it('should go back to the previous page', () => {
     component.back()

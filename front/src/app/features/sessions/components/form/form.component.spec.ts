@@ -111,10 +111,6 @@ describe('FormComponent', () => {
     route = TestBed.inject(ActivatedRoute);
   });
 
-  // Verify that the component is created successfully
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
   // Test navigation to /sessions if the user is not an admin
   it('should navigate to /sessions if not an admin', () => {

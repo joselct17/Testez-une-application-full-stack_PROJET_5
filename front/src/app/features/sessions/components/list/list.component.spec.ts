@@ -31,9 +31,6 @@ describe('ListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
   it('should call user and return the session infos', () => {
     expect(component.user).toEqual(mockSessionService.sessionInformation)

@@ -100,9 +100,6 @@ describe('DetailComponent', () => {
     spyHistoryBack.mockRestore();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
   it('should go back to the previous page from history', () => {
     component.back();

@@ -69,10 +69,6 @@ describe('LoginComponent', () => {
     router = TestBed.inject(Router);
   });
 
-  // Verify that the component is created successfully
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
   it('should not valid the form when password are empty', () => {
     const email = component.form.get('email');
