@@ -42,24 +42,25 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', () => {
+Cypress.Commands.add('login', (isAdmin = false) => {
   cy.intercept('POST', '/api/auth/login', {
     body: {
       id: 1,
-      username: 'user@example.com',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      admin: true,
+      username: isAdmin ? 'admin@example.com' : 'user@example.com',
+      firstName: isAdmin ? 'AdminFirst' : 'UserFirst',
+      lastName: isAdmin ? 'AdminLast' : 'UserLast',
+      admin: isAdmin,
     },
   }).as('login');
 
   cy.visit('/login');
 
-  cy.get('input[formControlName=email]').type('yoga@studio.com');
+  cy.get('input[formControlName=email]').type(isAdmin ? 'admin@studio.com' : 'yoga@studio.com');
   cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`);
 
   // Attendre que la requête soit bien interceptée
   cy.wait('@login');
 });
+
 
 
