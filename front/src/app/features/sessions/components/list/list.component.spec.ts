@@ -45,7 +45,7 @@ describe('ListComponent', () => {
     expect(detailButton).toBeTruthy
   })
 
-  it('should not display create and detail button if not admin', () => {
+  it('should not display create and detail button if not admin', (done) => {
     mockSessionService.sessionInformation.admin = false
     // Detect changes in the template
     fixture.detectChanges()
@@ -54,5 +54,6 @@ describe('ListComponent', () => {
 
     const detailButton = fixture.debugElement.query(By.css(`button[routerLink="['detail',session.id]"]`))
     expect(detailButton).toBeFalsy
+    done()
   })
 });
