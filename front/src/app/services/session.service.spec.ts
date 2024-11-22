@@ -16,11 +16,12 @@ describe('SessionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should start with isLogged is false', () => {
+  it('should start with isLogged is false', (done) => {
     expect(service.isLogged).toBeFalsy()
+    done()
   })
 
-  it('should set user into sessionInformation and isLogged to true', () => {
+  it('should set user into sessionInformation and isLogged to true', (done) => {
     const mockSession: SessionInformation =  {
       token: '1234',
       type: 'Bearer',
@@ -33,9 +34,10 @@ describe('SessionService', () => {
     service.logIn(mockSession);
     expect(service.isLogged).toBeTruthy()
     expect(service.sessionInformation).toEqual(mockSession)
+    done()
   })
 
-  it('should set isLogged to false and sessionInformation to undefined', () => {
+  it('should set isLogged to false and sessionInformation to undefined', (done) => {
     const mockSession: SessionInformation =  {
       token: '1234',
       type: 'Bearer',
@@ -49,6 +51,7 @@ describe('SessionService', () => {
     service.logOut()
     expect(service.sessionInformation).toBeUndefined()
     expect(service.isLogged).toBeFalsy()
+    done()
   })
 
   // Manage async test with done method
